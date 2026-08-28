@@ -35,17 +35,52 @@ export const metadata: Metadata = {
     "pulpa de naranjilla",
     "pulpa de tamarindo",
     "pulpa de tomate de árbol",
-    "sin conservantes",
+    "pulpa congelada",
+    "pulpa sin conservantes",
+    "batidos naturales",
     "pulpas artesanales Ecuador",
+    "comprar pulpa de fruta Quito",
   ],
   authors: [{ name: "FRUTPULP" }],
+  creator: "FRUTPULP",
+  publisher: "FRUTPULP",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     title: "FRUTPULP | Pulpas de Fruta Natural en Quito",
     description:
-      "Pulpas de fruta 100% natural. Sin conservantes, sin colorantes. Elaboradas artesanalmente en Quito.",
+      "Pulpas de fruta 100% natural. Sin conservantes, sin colorantes. Elaboradas artesanalmente en Quito. Batidos, postres, salsas y cócteles.",
+    url: "https://frutpulp.vercel.app",
+    siteName: "FRUTPULP",
     type: "website",
     locale: "es_EC",
-    siteName: "FRUTPULP",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+        alt: "FRUTPULP - Pulpas de fruta natural",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FRUTPULP | Pulpas de Fruta Natural en Quito",
+    description:
+      "Pulpas de fruta 100% natural, sin conservantes. Hechas en Quito, Ecuador.",
+    images: ["/icon.png"],
   },
 };
 
@@ -53,6 +88,32 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: "#173b2b",
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "FRUTPULP",
+  url: "https://frutpulp.vercel.app",
+  logo: "https://frutpulp.vercel.app/icon.png",
+  description:
+    "Pulpas de fruta 100% natural, sin conservantes ni colorantes, elaboradas artesanalmente en Quito, Ecuador.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Quito",
+    addressCountry: "EC",
+  },
+  areaServed: "Quito, Ecuador",
+  makesOffer: [
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Frutilla" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Mora" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Guanábana" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Piña" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Naranjilla" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Tamarindo" } },
+    { "@type": "Offer", itemOffered: { "@type": "Product", name: "Pulpa de Tomate de Árbol" } },
+  ],
+  sameAs: [],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -63,6 +124,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <SmoothScroll>{children}</SmoothScroll>

@@ -54,8 +54,7 @@ export default function ContactCTA() {
               inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
             }`}
           >
-            ¿Cuál te
-            <span className="font-light italic"> antoja?</span>
+            ¿Cuál te antoja?
           </h2>
           <p
             className={`mx-auto mt-5 max-w-lg text-base leading-7 text-[#173b2b]/60 transition-all duration-700 ${
