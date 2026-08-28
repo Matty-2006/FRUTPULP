@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useRef, useState } from "react";
 
 const items = [
   {
@@ -67,42 +63,54 @@ const items = [
 
 export default function QualityGrid() {
   const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".qg-label", {
-        scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        opacity: 0, y: 30, duration: 0.6,
-      });
-      gsap.from(".qg-title", {
-        scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        opacity: 0, y: 50, duration: 0.8, delay: 0.1,
-      });
-      gsap.from(".qg-card", {
-        scrollTrigger: { trigger: ".qg-grid", start: "top 85%" },
-        opacity: 0, y: 30, duration: 0.6, stagger: 0.08,
-      });
-    }, ref);
-    return () => ctx.revert();
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (
     <section ref={ref} id="calidad" className="relative bg-[#eef1e7] px-6 py-12 md:px-12 md:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 max-w-2xl md:mb-16">
-          <p className="qg-label mb-4 text-xs font-medium uppercase tracking-[0.35em] text-[#a63b32]">Nuestros valores</p>
-          <h2 className="qg-title text-4xl font-bold leading-[0.95] tracking-[-0.04em] md:text-6xl">
+          <p
+            className={`mb-4 text-xs font-medium uppercase tracking-[0.35em] text-[#a63b32] transition-all duration-700 ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
+            Nuestros valores
+          </p>
+          <h2
+            className={`text-4xl font-bold leading-[0.95] tracking-[-0.04em] transition-all duration-700 md:text-6xl ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
             Lo que nos define
             <br />
             <span className="text-[#173b2b]/25">es lo que no ponemos.</span>
           </h2>
         </div>
 
-        <div className="qg-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((item, i) => (
             <div
               key={item.title}
-              className="qg-card group rounded-2xl border border-[#173b2b]/8 bg-white p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(23,59,43,0.06)]"
+              style={{ transitionDelay: `${i * 70}ms` }}
+              className={`group rounded-2xl border border-[#173b2b]/8 bg-white p-8 transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(23,59,43,0.06)] ${
+                inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
             >
               <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-xl bg-[#173b2b]/5 text-[#173b2b] transition-colors duration-300 group-hover:bg-[#173b2b] group-hover:text-white">
                 {item.icon}

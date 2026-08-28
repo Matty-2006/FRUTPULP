@@ -1,10 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useRef, useState } from "react";
 
 const steps = [
   {
@@ -39,32 +35,55 @@ const steps = [
 
 export default function ProcessSteps() {
   const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".p-step", {
-        scrollTrigger: { trigger: ".p-grid", start: "top 85%" },
-        opacity: 0, y: 30, duration: 0.5, stagger: 0.1,
-      });
-    }, ref);
-    return () => ctx.revert();
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (
     <section ref={ref} id="proceso" className="relative bg-[#173b2b] px-6 py-12 text-white md:px-12 md:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-10 max-w-2xl md:mb-16">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.35em] text-[#e6b85c]">Cómo funciona</p>
-          <h2 className="text-4xl font-bold leading-[0.95] tracking-[-0.04em] md:text-6xl">
+          <p
+            className={`mb-3 text-xs font-medium uppercase tracking-[0.35em] text-[#e6b85c] transition-all duration-700 ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
+            Cómo funciona
+          </p>
+          <h2
+            className={`text-4xl font-bold leading-[0.95] tracking-[-0.04em] transition-all duration-700 md:text-6xl ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
             De la fruta a tu mesa.
             <br />
             <span className="text-white/20">Sin vueltas.</span>
           </h2>
         </div>
 
-        <div className="p-grid grid gap-6 md:grid-cols-4">
-          {steps.map((step) => (
-            <div key={step.num} className="p-step group">
+        <div className="grid gap-6 md:grid-cols-4">
+          {steps.map((step, i) => (
+            <div
+              key={step.num}
+              style={{ transitionDelay: `${i * 90}ms` }}
+              className={`group transition-all duration-500 ${
+                inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
+            >
               <div
                 className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 text-2xl transition-transform duration-300 group-hover:scale-110"
               >

@@ -53,10 +53,6 @@ function ProductCard({ producto, index }: { producto: (typeof productos)[0]; ind
           FRUTPULP
         </div>
 
-        <h3 className="mb-2 text-4xl font-bold tracking-tight sm:text-5xl">
-          {producto.nombre}
-        </h3>
-
         <p className="mb-6 max-w-xs text-sm leading-6 text-white/45">
           {producto.descripcion}
         </p>

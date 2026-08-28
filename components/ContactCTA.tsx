@@ -1,37 +1,28 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
 import { productos } from "@/data/productos";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function ContactCTA() {
   const ref = useRef<HTMLElement>(null);
   const [selected, setSelected] = useState(productos[0]);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".cta-title", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        opacity: 0, y: 40, duration: 0.9, ease: "power3.out",
-      });
-      gsap.from(".cta-sub", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        opacity: 0, y: 30, duration: 0.8, delay: 0.15,
-      });
-      gsap.from(".cta-picker", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        opacity: 0, y: 30, duration: 0.8, delay: 0.3,
-      });
-      gsap.from(".cta-action", {
-        scrollTrigger: { trigger: ref.current, start: "top 75%" },
-        opacity: 0, y: 24, duration: 0.7, delay: 0.45,
-      });
-    }, ref);
-    return () => ctx.revert();
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (
@@ -50,21 +41,37 @@ export default function ContactCTA() {
 
       <div className="relative mx-auto max-w-5xl">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="cta-title mb-5 inline-flex items-center gap-2 rounded-full border border-[#173b2b]/20 bg-white/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#173b2b]/70">
+          <p
+            className={`cta-title mb-5 inline-flex items-center gap-2 rounded-full border border-[#173b2b]/20 bg-white/40 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-[#173b2b]/70 transition-all duration-700 ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
             <span className="text-sm font-normal normal-case tracking-normal">👇</span>
             Elige tu sabor
           </p>
-          <h2 className="cta-title text-4xl font-bold leading-[0.95] tracking-[-0.04em] md:text-6xl">
+          <h2
+            className={`text-4xl font-bold leading-[0.95] tracking-[-0.04em] transition-all duration-700 md:text-6xl ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
             ¿Cuál te
             <span className="font-light italic"> antoja?</span>
           </h2>
-          <p className="cta-sub mx-auto mt-5 max-w-lg text-base leading-7 text-[#173b2b]/60">
+          <p
+            className={`mx-auto mt-5 max-w-lg text-base leading-7 text-[#173b2b]/60 transition-all duration-700 ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
             Escoge tu pulpa favorita y escribe a WhatsApp para hacer tu pedido. Te respondemos en minutos.
           </p>
         </div>
 
         {/* Interactive flavor picker */}
-        <div className="cta-picker mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+        <div
+          className={`mt-12 grid grid-cols-2 gap-3 transition-all duration-700 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 ${
+            inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           {productos.map((p) => {
             const active = p.nombre === selected.nombre;
             return (
@@ -103,7 +110,11 @@ export default function ContactCTA() {
         </div>
 
         {/* Action area */}
-        <div className="cta-action mt-12 flex flex-col items-center gap-6 rounded-3xl border border-[#173b2b]/10 bg-white/40 px-6 py-8 backdrop-blur-sm md:flex-row md:justify-between md:px-10">
+        <div
+          className={`mt-12 flex flex-col items-center gap-6 rounded-3xl border border-[#173b2b]/10 bg-white/40 px-6 py-8 backdrop-blur-sm transition-all duration-700 md:flex-row md:justify-between md:px-10 ${
+            inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+          }`}
+        >
           <div className="text-center md:text-left">
             <div className="text-xs font-bold uppercase tracking-[0.2em] text-[#173b2b]/40">
               Mi pedido

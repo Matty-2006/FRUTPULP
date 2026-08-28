@@ -100,3 +100,20 @@ html.lenis body {
   0% { opacity: 0; transform: scale(0); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+/* SLOW SPIN for decorative rings */
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 9s linear infinite;
+}
+
+@keyframes spin-slow-rev {
+  to { transform: rotate(-360deg); }
+}
+
+.animate-spin-slow-rev {
+  animation: spin-slow-rev 14s linear infinite;
+}

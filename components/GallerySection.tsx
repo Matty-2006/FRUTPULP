@@ -1,84 +1,139 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const uses = [
   {
     title: "Batidos",
-    description: "Mezcla con leche, agua o yogur. En 30 segundos tienes un batido con sabor real.",
-    gradient: "from-[#b52d2d]/80 to-[#a63b32]/60",
+    description: "Cremoso y listo en 30 segundos.",
+    gradient: "from-[#b52d2d] to-[#a63b32]",
+    accent: "#ff6d5c",
+    imagen: "/images/batidos.png",
     emoji: "🥤",
   },
   {
     title: "Postres",
-    description: "Flan, mousse, helados, cakes — la pulpa reemplaza cualquier saborizante artificial.",
-    gradient: "from-[#e6b85c]/80 to-[#d4a545]/60",
+    description: "Ese toque que enamora.",
+    gradient: "from-[#d9992a] to-[#e6b85c]",
+    accent: "#ffe9a8",
+    imagen: "/images/postres.png",
     emoji: "🍰",
+    imgFilter: "saturate-[0.8]",
   },
   {
     title: "Salsas",
-    description: "Salsa de mora para carnes, glaseado de tamarindo, coulis de frutilla.",
-    gradient: "from-[#173b2b]/80 to-[#24563e]/60",
+    description: "Sabor real en cada gota.",
+    gradient: "from-[#173b2b] to-[#24563e]",
+    accent: "#8fd9a8",
+    imagen: "/images/salsas.png",
     emoji: "🍽️",
   },
   {
     title: "Cócteles",
-    description: "La base perfecta para cócteles, mocktails y bebidas artesanales con carácter.",
-    gradient: "from-[#a63b32]/80 to-[#b52d2d]/60",
+    description: "Carácter sin atajos.",
+    gradient: "from-[#a63b32] to-[#b52d2d]",
+    accent: "#ff9b8f",
+    imagen: "/images/cocteles.png",
     emoji: "🍸",
   },
 ];
 
 export default function GallerySection() {
   const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".gal-label", {
-        scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        opacity: 0, y: 30, duration: 0.6,
-      });
-      gsap.from(".gal-title", {
-        scrollTrigger: { trigger: ref.current, start: "top 80%" },
-        opacity: 0, y: 50, duration: 0.8, delay: 0.1,
-      });
-      gsap.from(".gal-card", {
-        scrollTrigger: { trigger: ".gal-grid", start: "top 85%" },
-        opacity: 0, y: 40, scale: 0.95, duration: 0.7, stagger: 0.1,
-      });
-    }, ref);
-    return () => ctx.revert();
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
   return (
     <section ref={ref} className="relative bg-[#f8f5ed] px-6 py-12 md:px-12 md:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 max-w-2xl">
-          <p className="gal-label mb-4 text-xs font-medium uppercase tracking-[0.35em] text-[#a63b32]">Usos</p>
-          <h2 className="gal-title text-4xl font-bold leading-[0.95] tracking-[-0.04em] md:text-6xl">
+          <p
+            className={`mb-4 text-xs font-medium uppercase tracking-[0.35em] text-[#a63b32] transition-all duration-700 ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+            }`}
+          >
+            Usos
+          </p>
+          <h2
+            className={`text-4xl font-bold leading-[0.95] tracking-[-0.04em] transition-all duration-700 md:text-6xl ${
+              inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+            }`}
+          >
             Una pulpa.
             <br />
             <span className="text-[#173b2b]/25">Mil posibilidades.</span>
           </h2>
         </div>
 
-        <div className="gal-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {uses.map((use) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {uses.map((use, i) => (
             <div
               key={use.title}
-              className="gal-card group relative overflow-hidden rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2"
+              style={{ transitionDelay: `${i * 90}ms` }}
+              className={`group relative overflow-hidden rounded-3xl p-7 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_28px_70px_rgba(23,59,43,0.25)] ${
+                inView ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${use.gradient} transition-opacity duration-500`} />
-              <div className="relative z-10 flex min-h-[280px] flex-col justify-between">
-                <span className="text-5xl">{use.emoji}</span>
-                <div>
-                  <h3 className="mb-2 text-2xl font-bold text-white">{use.title}</h3>
-                  <p className="text-sm leading-6 text-white/70">{use.description}</p>
+              {/* colored gradient card */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${use.gradient}`} />
+
+              {/* subtle texture/dots */}
+              <div className="absolute inset-0 opacity-[0.06]" style={{
+                backgroundImage: "radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)",
+                backgroundSize: "18px 18px",
+              }} />
+
+              <div className="relative z-10 flex flex-col">
+                {/* top row: emoji + title side by side */}
+                <div className="flex items-center gap-3">
+                  <span className="text-4xl drop-shadow">{use.emoji}</span>
+                  <h3 className="text-2xl font-bold tracking-tight text-white">{use.title}</h3>
                 </div>
+
+                {/* centered circular photo with rotating gradient rings */}
+                <div className="relative mt-7 flex h-44 w-full items-center justify-center">
+                  {/* rotating gradient halo */}
+                  <div className="animate-spin-slow absolute h-40 w-40 rounded-full opacity-60 blur-[1px]"
+                    style={{ background: `conic-gradient(from 0deg, transparent 0%, ${use.accent} 25%, transparent 50%, ${use.accent} 75%, transparent 100%)` }}
+                  />
+                  {/* inner soft glow */}
+                  <div className="absolute h-28 w-28 rounded-full"
+                    style={{ background: `radial-gradient(circle, ${use.accent}cc, transparent 70%)` }}
+                  />
+                  {/* photo circle */}
+                  <div className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-full ring-2 ring-white/60 shadow-2xl transition-transform duration-500 group-hover:scale-110">
+                    <Image
+                      src={use.imagen}
+                      alt={use.title}
+                      fill
+                      sizes="96px"
+                      loading="lazy"
+                      className={`object-cover ${use.imgFilter ?? ""}`}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* text below */}
+                <p className="mt-5 text-center text-sm leading-6 text-white/80">{use.description}</p>
               </div>
             </div>
           ))}
