@@ -137,7 +137,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 text-center text-xs text-white/30 lg:flex-row lg:text-left">
           <p>© {new Date().getFullYear()} FRUTPULP. Todos los derechos reservados.</p>
-          <p>Página creada por Tec. Mateo Rodríguez</p>
+          <p>Página creada por Tnlgo. Mateo Rodríguez</p>
         </div>
       </div>
     </footer>
